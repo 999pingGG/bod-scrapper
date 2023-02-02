@@ -122,6 +122,8 @@ class PlayersSpider(scrapy.Spider):
             if page_numbers:
                 response.meta['max_page'] = max(page_numbers) - 1
             else:
-                response.meta['max_page'] = 0
+                # This player has a single page of games, process finished.
+                yield player
+                return
 
         yield scrapy.Request('http://bike.toyspring.com/player.php?p=' + player['id'] + '&pt=1&s=' + str(current_page + 1), self.parse_games_online, meta=response.meta)

@@ -50,7 +50,7 @@ class PlayersSpider(scrapy.Spider):
             player['file_urls'].append(player['flag'])
 
         # lmao
-        monstruous_div = response.xpath('//img[starts-with(@src, "flags")]//parent::div')
+        monstruous_div = response.xpath('//td[@class="leftnavi"]/div[not(@class)]')
 
         player['location'] = monstruous_div.xpath('text()')[1].get().strip()
 

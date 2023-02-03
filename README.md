@@ -1,16 +1,31 @@
 # bike.toyspring.com scrapper
 
-A program to scrape the Bike or Die website data for preservation purposes, in anticipation of a permanent shutdown.
-Currently, only player profile downloading is (partially) supported.
+A program to scrape the Bike or Die website data for preservation purposes, in anticipation of a permanent shutdown. The ultimate goal is to be able to clone the website along with its publicly available data and host it myself. Disclaimer: I'm currently a Python and XPath n00b, this code could probably be improved but it seems to work as it is right now. I'm open to suggestions and useful advice!
 
 ## How to use
 
 1. Clone the repo.
 2. Make sure that you have `python3` and `pip` installed. This was tested on Debian 11.
 3. Install [Scrapy](https://docs.scrapy.org/en/latest/intro/install.html).
-4. Run `scrapy crawl players -O players.json`. Wait for completion.
+4. Run `scrapy crawl <spider> -O <json file>`. Wait for completion.
 
-Disclaimer: I'm currently a Python and XPath n00b, this code could probably be improved but it seems to work as it is right now. I'm open to suggestions and useful advice!
+## Available spiders
+
+1. `players` (completed)
+2. `levelpacks` (WIP)
+
+## Upcoming spiders
+
+1. `levels`
+2. `forum`
+3. `movies`
+4. Anything else needed to clone the website.
+
+## Standalone scripts
+
+### scrap_files.py
+
+This script bruteforces `getfile.php`. Use it simply with `python3 scrap_files.py`. This should, in theory, download every existent levelpack, but apparently some of them are available only under `levels/` through their exact name. The levelpack spider should be already able to grab every levelpack.
 
 ## License
 

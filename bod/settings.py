@@ -17,7 +17,7 @@ NEWSPIDER_MODULE = 'bod.spiders'
 # USER_AGENT = 'bod (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 # CONCURRENT_REQUESTS = 32
@@ -35,6 +35,9 @@ ROBOTSTXT_OBEY = True
 
 # Disable Telnet Console (enabled by default)
 # TELNETCONSOLE_ENABLED = False
+
+TELNETCONSOLE_USERNAME = 'bod'
+TELNETCONSOLE_PASSWORD = 'bod'
 
 # Override the default request headers:
 # DEFAULT_REQUEST_HEADERS = {

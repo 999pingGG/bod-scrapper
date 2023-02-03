@@ -23,7 +23,7 @@ class PlayersSpider(scrapy.Spider):
         player = {}
 
         parsed_url = urlparse(response.url)
-        player['id'] = parse_qs(parsed_url.query).get('p')
+        player['id'] = int(parse_qs(parsed_url.query).get('p'))
 
         if player['id']:
             player['id'] = player['id'][0]
@@ -40,8 +40,8 @@ class PlayersSpider(scrapy.Spider):
 
         pic_url = response.css('img#plpic::attr(src)').get()
         if pic_url:
-            player['pic'] = response.urljoin(pic_url)
-            player['file_urls'].append(player['pic'])
+            player['pic_url'] = response.urljoin(pic_url)
+            player['file_urls'].append(player['pic_url'])
 
         flag_url = response.xpath('//img[starts-with(@src, "flags")]/@src').get()
         if flag_url:

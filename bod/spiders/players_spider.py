@@ -2,15 +2,15 @@ import scrapy
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
 
+from .utils import get_max_page, get_timestamp_from_script
+
 
 class PlayersSpider(scrapy.Spider):
     name = "players"
 
     def start_requests(self):
         url = 'http://bike.toyspring.com/player.php?p='
-        # We don't want to miss any single player. This should be enough.
-        # Unless Sz has hidden something in a ridiculously large ID.
-        for i in range(1, 100000):
+        for i in range(1, 30000):
             yield scrapy.Request(url=url+str(i), callback=self.parse)
 
     # start_urls = [
@@ -23,10 +23,10 @@ class PlayersSpider(scrapy.Spider):
         player = {}
 
         parsed_url = urlparse(response.url)
-        player['id'] = int(parse_qs(parsed_url.query).get('p'))
+        player['id'] = parse_qs(parsed_url.query).get('p')
 
         if player['id']:
-            player['id'] = player['id'][0]
+            player['id'] = int(player['id'][0])
         else:   # Just a sanity check.
             self.logger.error('Invalid URL!!')
             return
@@ -67,12 +67,12 @@ class PlayersSpider(scrapy.Spider):
         contains_last_seen = bool(monstruous_div.xpath('text()[contains(., "Last seen")]'))
         contains_last_submission = bool(monstruous_div.xpath('text()[contains(., "Last submission")]'))
         if contains_last_seen:
-            player['last_seen'] = self.get_timestamp_from_script(timestamp_scripts[0])
+            player['last_seen'] = get_timestamp_from_script(timestamp_scripts[0])
         if contains_last_submission:
             if contains_last_seen:
-                player['last_submission'] = self.get_timestamp_from_script(timestamp_scripts[1])
+                player['last_submission'] = get_timestamp_from_script(timestamp_scripts[1])
             else:
-                player['last_submission'] = self.get_timestamp_from_script(timestamp_scripts[0])
+                player['last_submission'] = get_timestamp_from_script(timestamp_scripts[0])
 
         best_rank_ever = monstruous_div.xpath('b[starts-with(text(), "#")]/text()').get()
         if best_rank_ever:
@@ -95,17 +95,13 @@ class PlayersSpider(scrapy.Spider):
         # The 's' param is the page number.
         yield scrapy.Request(response.url + '&pt=1&s=0', self.parse_games_online, meta={'player': player})
 
-    @staticmethod
-    def get_timestamp_from_script(script_content):
-        return int(script_content[4:script_content.find(')')])
-
     def parse_games_online(self, response):
         player = response.meta['player']
 
         player['games'] = []
         rows = response.xpath('//table[@id="games"]/tr')
         for row in rows:
-            submitted = self.get_timestamp_from_script(row.xpath('descendant::script/text()').get())
+            submitted = get_timestamp_from_script(row.xpath('descendant::script/text()').get())
             level_id = int(row.xpath('td[position()=2]/a/@href').get()[11:])
             time = row.xpath('td[position()=3]/text()').get()
             # This is just a work variable.
@@ -134,27 +130,14 @@ class PlayersSpider(scrapy.Spider):
         parsed_url = urlparse(response.url)
         current_page = int(parse_qs(parsed_url.query).get('s')[0])
 
-        if response.meta.get('max_page') and current_page == response.meta['max_page']:
+        max_page = get_max_page(response.css('div.pages'))
+        if current_page == max_page:
             # Max page reached, now proceed to gather their uploads.
             # Tab 2 is the "uploads" tab.
-            yield scrapy.Request('http://bike.toyspring.com/player.php?p=' + player['id'] + '&pt=2', self.parse_uploads, meta={'player': player})
+            yield scrapy.Request('http://bike.toyspring.com/player.php?p=' + str(player['id']) + '&pt=2', self.parse_uploads, meta={'player': player})
             return
-        else:
-            # Some black magic *uckery to get all the a (anchor) and b (bold) elements contained by the pagination div.
-            #   - The anchors are the clickable buttons, including navigation buttons and pages buttons.
-            #   - The bold element is not a button, it indicates the current page.
-            # From all those, get the maximum value.
-            # The pagination div is not even present when there's only one page.
-            page_numbers = response.css('div.pages').xpath('a/text()[number(.) = .] | b/text()[number(.) = .]').getall()
-            page_numbers = [int(i) for i in page_numbers]
-            if page_numbers:
-                response.meta['max_page'] = max(page_numbers) - 1
-            else:
-                # This player has a single page of games, now proceed to gather their uploads.
-                yield scrapy.Request('http://bike.toyspring.com/player.php?p=' + player['id'] + '&pt=2', self.parse_uploads, meta={'player': player})
-                return
 
-        yield scrapy.Request('http://bike.toyspring.com/player.php?p=' + player['id'] + '&pt=1&s=' + str(current_page + 1), self.parse_games_online, meta=response.meta)
+        yield scrapy.Request('http://bike.toyspring.com/player.php?p=' + str(player['id']) + '&pt=1&s=' + str(current_page + 1), self.parse_games_online, meta=response.meta)
 
     def parse_uploads(self, response):
         player = response.meta['player']
@@ -187,7 +170,7 @@ class PlayersSpider(scrapy.Spider):
 
                 uploaded = row.xpath('td/script/text()').get()
                 if uploaded:
-                    levelpack['uploaded'] = self.get_timestamp_from_script(uploaded)
+                    levelpack['uploaded'] = get_timestamp_from_script(uploaded)
 
                 player['levelpacks'].append(levelpack)
 

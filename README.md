@@ -7,12 +7,13 @@ A program to scrape the Bike or Die website data for preservation purposes, in a
 1. Clone the repo.
 2. Make sure that you have `python3` and `pip` installed. This was tested on Debian 11.
 3. Install [Scrapy](https://docs.scrapy.org/en/latest/intro/install.html).
-4. Run `scrapy crawl <spider> -O <json file>`. Wait for completion.
+4. `cd` into the repo directory.
+5. Run `scrapy crawl <spider> -O <json file>`. Wait for completion.
 
 ## Available spiders
 
 1. `players` (completed)
-2. `levelpacks` (WIP)
+2. `levelpacks` (completed)
 
 ## Upcoming spiders
 

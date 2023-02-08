@@ -3,6 +3,9 @@
 files/*
 !files/.gitkeep
 
+# I regularly send Scrapy's stdout to a text file for easier analysis.
+*.txt
+
 ### End of files specific to this project, now the generic gitignore corresponding to Python ###
 
 # Byte-compiled / optimized / DLL files

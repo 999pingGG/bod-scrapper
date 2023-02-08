@@ -30,6 +30,12 @@ class Levels(scrapy.Spider):
             if best_time:
                 level['best_time'] = best_time.strip()
 
+            level_svg = response.xpath('//img[@class = "lvsvg"]/@src').get()
+            if level_svg:
+                level['svg'] = response.urljoin(level_svg)
+                level['file_urls'] = level.get('file_urls') or []
+                level['file_urls'].append(level['svg'])
+
             rating = 0
             for i in range(1, 6):
                 if response.xpath('//div[@class = "mainview"]/table[@width = "100%"]/tr/td/img[@src="img/greendot' + str(i) + '.gif"]'):

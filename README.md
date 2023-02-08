@@ -14,19 +14,24 @@ A program to scrape the Bike or Die website data for preservation purposes, in a
 
 1. `players` (completed)
 2. `levelpacks` (completed)
+3. `levels` (completed)
 
 ## Upcoming spiders
 
-1. `levels`
-2. `forum`
-3. `movies`
-4. Anything else needed to clone the website.
+1. `forum`
+2. `movies`
+3. Anything else needed to clone the website.
 
 ## Standalone scripts
 
 ### scrap_files.py
 
 This script bruteforces `getfile.php`. Use it simply with `python3 scrap_files.py`. This should, in theory, download every existent levelpack, but apparently some of them are available only under `levels/` through their exact name. The levelpack spider should be already able to grab every levelpack.
+
+## Known issues
+
+- There is an unhandled edge case where there can be links in a levelpack creator field. The link and everything that comes after it is ignored.
+- The levels spider is unverified for correct results. It seems like there's an issue with some level's comments.
 
 ## License
 

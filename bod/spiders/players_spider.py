@@ -6,7 +6,7 @@ from .utils import get_max_page, get_timestamp_from_script
 
 
 class PlayersSpider(scrapy.Spider):
-    name = "players"
+    name = 'players'
 
     def start_requests(self):
         url = 'http://bike.toyspring.com/player.php?p='

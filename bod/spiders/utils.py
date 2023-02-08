@@ -120,27 +120,24 @@ def process_comments(comments_table, comments_container, response):
                 continue
             elif not pinned and any(comment["comment_id"] == comment_id for comment in comments):
                 continue
-        else:
-            print('Comment has no ID!')
-            continue
 
         comment = {}
+        if comment_id:
+            comment['comment_id'] = comment_id
 
         player_id = row.xpath('substring(td/a[starts-with(@href, "player.php?p=")]/@href, 14)').get()
         if player_id:
             comment['player_id'] = int(player_id)
 
+        content = ''.join(comment_selector.xpath('node()').getall())
+
+        if content.find('<a name="c') > -1:
+            # Strip the anchor with the comment ID from the HTML, which I assume is always the first anchor.
+            content = content[content.find('"></a>') + 6:]
+
         date = row.xpath('td/table/tr/td/div[@class = "stamp"]/script/text()').get()
         if date:
             comment['date'] = get_timestamp_from_script(date)
-
-        content = ''.join(comment_selector.xpath('node()').getall())
-
-        comment['comment_id'] = comment_id
-        # Strip the anchor with the comment ID from the HTML, which I assume is always the first anchor.
-        content = content[content.find('"></a>') + 6:]
-
-        if date:
            # Strip the div which contains the timestamp script.
             content = content[0:content.find('<div class="stamp">')]
 

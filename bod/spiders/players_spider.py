@@ -11,7 +11,7 @@ class PlayersSpider(scrapy.Spider):
     def start_requests(self):
         url = 'http://bike.toyspring.com/player.php?p='
         for i in range(1, 30000):
-            yield scrapy.Request(url=url+str(i), callback=self.parse)
+            yield scrapy.Request(url=url+str(i))
 
     # start_urls = [
     #     'http://bike.toyspring.com/player.php?p=4379',

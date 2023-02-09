@@ -12,7 +12,7 @@ class Games(scrapy.Spider):
         url = 'http://bike.toyspring.com/game.php?cp=0&g='
 
         for i in range(1, 1000000):
-            yield scrapy.Request(url=url+str(i), callback=self.parse)
+            yield scrapy.Request(url=url+str(i))
 
     def parse(self, response):
         parsed_url = urlparse(response.url)

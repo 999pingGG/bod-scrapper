@@ -19,11 +19,12 @@ Disclaimer: I'm currently a Python and XPath n00b, this code could probably be i
 3. `levels` (completed)
 4. `games` (completed)
 5. `movies` (completed)
+6. `hof` (completed)
 
 ## Upcoming spiders
 
 1. `forum`
-2. `hof`
+2. `freestyle`
 3. Anything else needed to clone the website.
 
 ## Standalone scripts

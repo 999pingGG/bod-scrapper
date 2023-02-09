@@ -92,14 +92,12 @@ comment_replacements = [
 ]
 
 
-def process_comments(comments_table, comments_container, response):
+def process_comments(comments_table_rows, comments_container, response):
     comments = comments_container.get('comments') or []
     pinned_comments = comments_container.get('pinned_comments') or []
     file_urls = comments_container.get('file_urls') or []
 
-    # Get all the tr's that contain a td with a table, to filter out an empty row which appears
-    # when there's a pinned comment.
-    for row in comments_table:
+    for row in comments_table_rows:
         comment_selector = row.xpath('descendant::td[@class = "bubble"]')
 
         # Pinned comments have the "bubble_pin" class instead of "bubble". If "bubble" is not found,
@@ -108,6 +106,10 @@ def process_comments(comments_table, comments_container, response):
         if not comment_selector:
             comment_selector = row.xpath('descendant::td[@class = "bubble_pin"]')
             pinned = True
+
+        if not comment_selector:
+            # This is an empty row used as spacer.
+            continue
 
         comment_id = comment_selector.xpath('a/@name').get()
         if comment_id and comment_id[0] == 'c':

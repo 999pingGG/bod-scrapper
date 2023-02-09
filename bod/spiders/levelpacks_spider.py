@@ -12,7 +12,7 @@ class LevelpacksSpider(scrapy.Spider):
         url = 'http://bike.toyspring.com/levels.php?cp=0&p='
 
         for i in range(1, 1000):
-            yield scrapy.Request(url=url+str(i), callback=self.parse)
+            yield scrapy.Request(url=url+str(i))
 
     # start_urls = [
     #     'http://bike.toyspring.com/levels.php?cp=0&p=1',

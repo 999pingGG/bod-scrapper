@@ -12,7 +12,7 @@ class Levels(scrapy.Spider):
         url = 'http://bike.toyspring.com/level.php?cp=0&l='
 
         for i in range(1, 5000):
-            yield scrapy.Request(url=url+str(i), callback=self.parse)
+            yield scrapy.Request(url=url+str(i))
 
     def parse(self, response):
         parsed_url = urlparse(response.url)

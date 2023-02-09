@@ -1,6 +1,8 @@
 # bike.toyspring.com scrapper
 
-A program to scrape the Bike or Die website data for preservation purposes, in anticipation of a permanent shutdown. The ultimate goal is to be able to clone the website along with its publicly available data and host it myself. Disclaimer: I'm currently a Python and XPath n00b, this code could probably be improved but it seems to work as it is right now. I'm open to suggestions and useful advice!
+A program to scrape the Bike or Die website data for preservation purposes, in anticipation of a permanent shutdown. The ultimate goal is to be able to clone the website along with its publicly available data and host it myself. This project focuses on downloading all the available data as JSON, even if there's some redundancy between the different endpoints used and even if some "stray" data is obtained; for example, game replays without an associated player. In order to be able to fully clone the website it is necessary to dump the JSONs into a proper database, download the original site's HTML pages to adapt and use them as templates (or remake them), and make a proper backend and frontend.
+
+Disclaimer: I'm currently a Python and XPath n00b, this code could probably be improved but it seems to work as it is right now. I'm open to suggestions and useful advice!
 
 ## How to use
 
@@ -16,14 +18,13 @@ A program to scrape the Bike or Die website data for preservation purposes, in a
 2. `levelpacks` (completed)
 3. `levels` (completed)
 4. `games` (completed)
+5. `movies` (completed)
 
 ## Upcoming spiders
 
 1. `forum`
-2. `movies`
-3. `news`
-4. `freestyle`
-5. Anything else needed to clone the website.
+2. `hof`
+3. Anything else needed to clone the website.
 
 ## Standalone scripts
 

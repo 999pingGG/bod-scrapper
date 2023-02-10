@@ -71,25 +71,51 @@ comment_replacements = [
         'new': '\n',
     },
     {
-        # I can't believe I finally understand regex!! Many thanks to https://regex101.com/
+        'old': '<br>',
+        'new': '\n',
+    },
+    # I can't believe I finally understand regex!! Many thanks to https://regex101.com/
 
+    # !!! IT'S VERY IMPORTANT TO PUT THE REGEXES IN THE RIGHT ORDER !!!
+    # That is, more specific regexes first, more general regexes last. For example, if we have a regex for replacing general <a> elements
+    # before <a> elements linking to, say, a player profile, the general one will do the replacement first when the second one would be better.
+    {
         # Replace player mentions' HTML which includes flag pic, profile pic and profile link
         # with a simple pattern containing just the player's ID.
         'regex': re.compile("<img src=\"flags/[a-zA-Z_-]*?\.gif\" align=\"absmiddle\">.*?<a href=\"player\.php\?p=([0-9]*?)\"><img src=\"pic/(\\1|empty)\.(gif|jpg|png)\" align=\"absmiddle\" width=\"24\" height=\"24\">[^<]*?</a>", re.S),
-        'pre': '[player](',
-        'group': 1,
-        'post': ')',
+        'lambda': lambda match: '<player[' + match.group(1) + ']>()',
     },
     {
-        # Ideally, we should replace all the anchors where the href matches the inner text, but we have to match
-        # .*?http.*? (inner text also starts with http) instead of .*?//1.*? (inner text matches href)
-        # just because some links' inner text contains a space...
-        'regex': re.compile("<a href=\"(\\S+)?\" target=\"_blank\"><img src=\"img/extlink.gif\" border=\"0\">.*?http.*?</a>", re.S),
-        'pre': '[link](',
-        'group': 1,
-        'post': ')',
+        # Replace game replay links.
+        'regex': re.compile("<a href=\"game\.php\?g=(\d+?)\"><img src=\"img/minibikeicon\.gif\">(.*?)</a>", re.S),
+        'lambda': lambda match: '<game[' + match.group(1) + ']>(' + match.group(2) + ')',
+    },
+    {
+        # Replace external links.
+        'regex': re.compile("<a href=\"(\\S+)?\" target=\"_blank\"><img src=\"img/extlink.gif\" border=\"0\">(.*?)</a>", re.S),
+        'lambda': lambda match: '[' + match.group(1) + '](' + match.group(2) + ')',
+    },
+    {
+        # Replace other <a> links.
+        'regex': re.compile("<a href=\"(\\S+)?\">(.*?)</a>", re.S),
+        'lambda': lambda match: '[' + match.group(1) + '](' + match.group(2) + ')',
     },
 ]
+
+
+def process_user_text(user_text):
+    for replacement in comment_replacements:
+        if replacement.get('old'):
+            # This is a simple replacement.
+            user_text = user_text.replace(replacement['old'], replacement['new'])
+        else:
+            # This replacement uses regex.
+            user_text = replacement['regex'].sub(
+                replacement['lambda'],
+                user_text
+            )
+
+    return user_text
 
 
 def process_comments(comments_table_rows, comments_container, response):
@@ -143,16 +169,7 @@ def process_comments(comments_table_rows, comments_container, response):
            # Strip the div which contains the timestamp script.
             content = content[0:content.find('<div class="stamp">')]
 
-        for replacement in comment_replacements:
-            if replacement.get('old'):
-                # This is a simple replacement.
-                content = content.replace(replacement['old'], replacement['new'])
-            else:
-                # This replacement uses regex.
-                content = replacement['regex'].sub(
-                    lambda match: replacement['pre'] + match.group(replacement['group']) + replacement['post'],
-                    content
-                )
+        content = process_user_text(content)
 
         comment['content'] = content
         # Download every image that might remain after the replacements.

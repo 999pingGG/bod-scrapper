@@ -2,7 +2,7 @@ import scrapy
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
 
-from .utils import get_max_page, process_comments
+from .utils import get_max_page, process_comments, process_user_text
 
 
 class LevelpacksSpider(scrapy.Spider):
@@ -19,6 +19,7 @@ class LevelpacksSpider(scrapy.Spider):
     #     'http://bike.toyspring.com/levels.php?cp=0&p=4',
     #     'http://bike.toyspring.com/levels.php?cp=0&p=5',
     #     'http://bike.toyspring.com/levels.php?cp=0&p=16',
+    #     'http://bike.toyspring.com/levels.php?cp=0&p=40',
     #     'http://bike.toyspring.com/levels.php?cp=0&p=200',
     #     'http://bike.toyspring.com/levels.php?cp=0&p=202',
     # ]
@@ -66,11 +67,9 @@ class LevelpacksSpider(scrapy.Spider):
             if creator and len(creator) > 13:
                 levelpack['creator'] = int(creator[13:])
             else:
-                creator = response.xpath('//table[@class="lpinfo"]/tr/td[starts-with(text(), "Created by")]/text()').getall()
-                if creator and len(creator) > 1:
-                    levelpack['creator'] = creator[1]
-                else:
-                    levelpack['creator'] = response.xpath('//table[@class="lpinfo"]/tr/td[starts-with(text(), "Created by")]/a/text()').get()
+                creator = process_user_text(''.join(response.xpath('//table[@class="lpinfo"]/tr/td[starts-with(text(), "Created by")]/node()').getall()))[12:]
+                if creator != '?':
+                    levelpack['creator'] = creator
 
             rating = 0
             for i in range(1, 6):

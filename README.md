@@ -20,22 +20,22 @@ Disclaimer: I'm currently a Python and XPath n00b, this code could probably be i
 4. `games` (completed)
 5. `movies` (completed)
 6. `hof` (completed)
+7. `freestyle` (completed)
 
 ## Upcoming spiders
 
 1. `forum`
-2. `freestyle`
-3. Anything else needed to clone the website.
+2. Anything else needed to clone the website.
 
 ## Standalone scripts
 
 ### scrap_files.py
 
-This script bruteforces `getfile.php`. Use it simply with `python3 scrap_files.py`. This should, in theory, download every existent levelpack, but apparently some of them are available only under `levels/` through their exact name. The levelpack spider should be already able to grab every levelpack.
+This script bruteforces `getfile.php`. Use it simply with `python3 scrap_files.py`. This should, in theory, download every existent levelpack, but apparently some of them are available only under `levels/` through their exact name. The levelpack spider should be able to grab every levelpack.
 
 ## Known issues
 
-- There is an unhandled edge case where there can be links in a levelpack creator field. The link and everything that comes after it is ignored.
+- The `hof` and `freestyle` spiders have hardcoded data to save dev time on something that is very unlikely to change in the future.
 
 ## License
 

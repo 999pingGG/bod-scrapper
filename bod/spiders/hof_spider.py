@@ -12,6 +12,11 @@ class Hof(scrapy.Spider):
             comments_page=0,
             hof=dict(title='Time Trial Champions', comments=[]))
         )
+        yield scrapy.Request(url='http://bike.toyspring.com/view.php?cp=0&c=1', cb_kwargs=dict(
+            category=1,
+            comments_page=0,
+            hof=dict(title='Freestyle', comments=[]))
+        )
         yield scrapy.Request(url='http://bike.toyspring.com/view.php?cp=0&c=2', cb_kwargs=dict(
             category=2,
             comments_page=0,

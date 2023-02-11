@@ -11,7 +11,7 @@ class LevelpacksSpider(scrapy.Spider):
     def start_requests(self):
         url = 'http://bike.toyspring.com/levels.php?cp=0&p='
 
-        for i in range(1, 1000):
+        for i in range(0, 1000):
             yield scrapy.Request(url=url+str(i))
 
     # start_urls = [
@@ -36,7 +36,8 @@ class LevelpacksSpider(scrapy.Spider):
             name = response.xpath('//b[@class="title"]/text()').get()
             if name:
                 levelpack['name'] = name.strip()
-            else:
+            # Let the "levelpack 0" through to gather all the levelpack explorer's comments.
+            elif levelpack['id'] != 0:
                 # Just a sanity check.
                 # We suppose that, if the levelpack has no name, then it is invalid and should have "All levels" as title.
                 if not response.xpath('//b[text()="All levels"]'):
@@ -68,7 +69,7 @@ class LevelpacksSpider(scrapy.Spider):
                 levelpack['creator'] = int(creator[13:])
             else:
                 creator = process_user_text(''.join(response.xpath('//table[@class="lpinfo"]/tr/td[starts-with(text(), "Created by")]/node()').getall()))[12:]
-                if creator != '?':
+                if len(creator) > 0 and creator != '?':
                     levelpack['creator'] = creator
 
             rating = 0
@@ -107,7 +108,7 @@ class LevelpacksSpider(scrapy.Spider):
                 levelpack['bod_version'] = '1.5'
             elif response.xpath('//img[@src="img/v16.gif"]'):
                 levelpack['bod_version'] = '1.6'
-            else:
+            elif levelpack['id'] != 0:
                 levelpack['bod_version'] = '1.0'
         else:
             levelpack = response.meta['levelpack']

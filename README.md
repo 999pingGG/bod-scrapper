@@ -1,8 +1,8 @@
 # bike.toyspring.com scrapper
 
-A program to scrape the Bike or Die website data for preservation purposes, in anticipation of a permanent shutdown. The ultimate goal is to be able to clone the website along with its publicly available data and host it myself. This project focuses on downloading all the available data as JSON, even if there's some redundancy between the different endpoints used and even if some "stray" data is obtained; for example, game replays without an associated player. In order to be able to fully clone the website it is necessary to dump the JSONs into a proper database, download the original site's HTML pages to adapt and use them as templates (or remake them), and make a proper backend and frontend.
+A program to scrape the Bike or Die website data for preservation purposes, in anticipation of a permanent shutdown. The ultimate goal is to be able to clone the website along with its publicly available data and host it myself. This project focuses on downloading all the available data as JSON, even if there's some redundancy between the different endpoints used and even if some "stray" data is obtained; for example, game replays without an associated player. In order to be able to fully clone the website it is necessary to dump the JSONs into a proper database, download the original site's HTML pages to adapt and use them as templates (or remaster them), and make a proper backend and frontend.
 
-Disclaimer: I'm currently a Python and XPath n00b, this code could probably be improved but it seems to work as it is right now. I'm open to suggestions and useful advice!
+Disclaimer: I'm currently a Python and XPath n00b, this code can be improved but it works as it is right now. I'm open to suggestions and useful advice!
 
 ## How to use
 
@@ -21,11 +21,7 @@ Disclaimer: I'm currently a Python and XPath n00b, this code could probably be i
 5. `movies` (completed)
 6. `hof` (completed)
 7. `freestyle` (completed)
-
-## Upcoming spiders
-
-1. `forum`
-2. Anything else needed to clone the website.
+8. `forum` (completed)
 
 ## Standalone scripts
 
@@ -35,7 +31,7 @@ This script bruteforces `getfile.php`. Use it simply with `python3 scrap_files.p
 
 ## Known issues
 
-- The `hof` and `freestyle` spiders have hardcoded data to save dev time on something that is very unlikely to change in the future.
+- The `hof`, `freestyle` and `forum` spiders have hardcoded data to save dev time on something that is very unlikely to change in the future. Unless, you know, Sz performs a comeback... Please Sz, come back home.
 
 ## License
 

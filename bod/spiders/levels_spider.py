@@ -26,6 +26,7 @@ class Levels(scrapy.Spider):
             # "l" stands for "level".
             level['id'] = int(parse_qs(parsed_url.query).get('l')[0])
             level['name'] = response.xpath('//b[@class="title"]/text()').get().strip()
+            level['levelpack_id'] = int(response.xpath('//td[@class = "mainview"]/div[@class = "mainview"]/a[starts-with(@href, "levels.php?p=")]/@href').get()[13:])
             best_time = response.xpath('//table[@width = "100%"]/tr/td/a[starts-with(@href, "view.php?c=")]/text()').get()
             if best_time:
                 level['best_time'] = best_time.strip()

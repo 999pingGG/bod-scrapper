@@ -1,6 +1,6 @@
 import scrapy
 
-from .utils import get_max_page, get_timestamp_from_script, process_comments, process_user_text
+from .utils import get_max_page, get_timestamp_from_script, process_comments, process_user_text, process_file_urls
 
 
 class Forum(scrapy.Spider):
@@ -81,6 +81,8 @@ class Forum(scrapy.Spider):
             # Take out the title.
             thread_content.pop(0)
             thread_content = process_user_text(''.join(thread_content))
+            thread['content'] = thread_content
+            process_file_urls(thread_content, thread, response)
 
         process_comments(response.xpath('//td[@class = "mainview"]/div[@class = "mainview"]/table[not(@*)]/tr'), thread, response)
 

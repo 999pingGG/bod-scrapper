@@ -8,6 +8,12 @@ from .utils import get_max_page, get_timestamp_from_script
 class PlayersSpider(scrapy.Spider):
     name = 'players'
 
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'bod.pipelines.PlayersPipeline': 300,
+        }
+    }
+
     def start_requests(self):
         url = 'http://bike.toyspring.com/player.php?p='
         for i in range(1, 30000):
@@ -43,16 +49,20 @@ class PlayersSpider(scrapy.Spider):
             player['pic_url'] = response.urljoin(pic_url)
             player['file_urls'].append(player['pic_url'])
 
-        flag_url = response.xpath('//img[starts-with(@src, "flags")]/@src').get()
-        if flag_url:
-            player['flag_url'] = response.urljoin(flag_url)
-            player['file_urls'].append(player['flag_url'])
-
         # lmao
         monstruous_div = response.xpath('//td[@class="leftnavi"]/div[not(@class)]')
 
-        if (response.xpath('//img[starts-with(@src, "flags")]')):
-            player['location'] = monstruous_div.xpath('text()')[1].get().strip()
+        flag_url = response.xpath('//img[starts-with(@src, "flags")]/@src').get()
+        if flag_url:
+            flag_url = response.urljoin(flag_url)
+            # Take out the beggining of the URL and the file extension, leaving only the country name.
+            # Also, replace underscores with spaces.
+            country = flag_url[32:-4].replace('_', ' ')
+            player['country'] = country
+
+            location = monstruous_div.xpath('text()')[1].get().strip()
+            if len(location) > 0:
+                player['city'] = location[len(country) + 2:]
 
         email = monstruous_div.xpath('substring(a[starts-with(@href, "mailto:")]/@href, 8)').get()
         if email:

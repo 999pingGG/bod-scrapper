@@ -8,9 +8,25 @@ Disclaimer: I'm currently a Python and XPath n00b, this code can be improved but
 
 1. Clone the repo.
 2. Make sure that you have `python3` and `pip` installed. This was tested on Debian 11.
-3. Install [Scrapy](https://docs.scrapy.org/en/latest/intro/install.html).
+3. Install [Scrapy](https://docs.scrapy.org/en/latest/intro/install.html) and [Psycopg](https://www.psycopg.org/docs/install.html).
 4. `cd` into the repo directory.
-5. Run `scrapy crawl <spider> -O <json file>`. Wait for completion.
+5. Run `scrapy crawl <spider> [PostgreSQL connection] -O <json file>`. Wait for completion.
+
+You can optionally dump the data into a PostgreSQL database by providing a few settings in the form `-a <setting>=<value>`. If you don't provide them, no problem, the data will be saved as JSON in all cases. A SQL Script is included to automatically setup the required database. The scrapper will overwrite existing data.
+
+The settings are as follows:
+
+| Setting    | Default     | Required |
+| ---------- | ----------- | -------- |
+| `host`     | `localhost` | No       |
+| `port`     | `5432`      | No       |
+| `dbname`   | None        | Yes      |
+| `user`     | None        | Yes      |
+| `password` | None        | Yes      |
+
+Example:
+
+`scrapy crawl players -a host="192.168.1.117" -a dbname="sitedata" -a user="admin" -a password="somethingsomething" -O data.json`
 
 ## Available spiders
 
@@ -32,6 +48,7 @@ This script bruteforces `getfile.php`. Use it simply with `python3 scrap_files.p
 ## Known issues
 
 - The `hof`, `freestyle` and `forum` spiders have hardcoded data to save dev time on something that is very unlikely to change in the future. Unless, you know, Sz performs a comeback... Please Sz, come back home.
+- The following levelpack's name seems to break Scrapy or its underlying XML parser library, yielding a whitespace name: `http://bike.toyspring.com/levels.php?p=65`. I wonder whether other stuff breaks like this and goes unnoticed...?
 
 ## License
 

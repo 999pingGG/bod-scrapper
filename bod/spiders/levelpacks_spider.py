@@ -8,6 +8,12 @@ from .utils import get_max_page, process_comments, process_user_text
 class LevelpacksSpider(scrapy.Spider):
     name = 'levelpacks'
 
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'bod.pipelines.LevelpacksPipeline': 300,
+        }
+    }
+
     def start_requests(self):
         url = 'http://bike.toyspring.com/levels.php?cp=0&p='
 
